@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
+import { blogCategories } from "../assets/assets";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
