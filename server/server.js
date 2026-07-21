@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
+import multer from "multer";
 import connectDB from "./configs/db.js";
 import adminRouter from "./routes/adminRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
@@ -17,6 +18,23 @@ app.use(express.json());
 app.get("/", (req, res) => res.send("API is working"));
 app.use("/api/admin", adminRouter);
 app.use("/api/blog", blogRouter);
+
+// upload/error handler — keeps multer failures in the { success, message }
+// shape the client reads, instead of Express's default HTML 500 page
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    const message =
+      err.code === "LIMIT_FILE_SIZE"
+        ? "Image is too large. Maximum size is 5MB."
+        : err.message;
+    return res.status(400).json({ success: false, message });
+  }
+  if (err) {
+    console.error(err);
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next();
+});
 
 const PORT = process.env.PORT || 3000;
 
